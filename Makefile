@@ -1,16 +1,21 @@
-all: monprog.out
+S=src
+B=bin
+O=obj
 
-monprog.out: main.o Graphe.o
-	g++ -g main.o Graphe.o -o monprog.out
 
-main.o: main.cpp Graphe.h
-	g++ -g -Wall -c -Wfatal-errors main.cpp
+all: $(B)/monprog.out
 
-Graphe.o: Graphe.h Graphe.cpp Graphe.h
-	g++ -g -Wall -c -Wfatal-errors Graphe.cpp
+$(B)/monprog.out: $(O)/main.o $(O)/Graphe.o
+	g++ -g $(O)/main.o $(O)/Graphe.o -o $(B)/monprog.out
+
+$(O)/main.o: $(S)/main.cpp $(S)/Graphe.h
+	g++ -g -Wall -c -Wfatal-errors $(S)/main.cpp
+
+$(O)/Graphe.o: $(S)/Graphe.h $(S)/Graphe.cpp $(S)/Graphe.h
+	g++ -g -Wall -c -Wfatal-errors $(S)/Graphe.cpp
 
 clean:
-	rm *.o
+	rm $(O)/*.o
 
 veryclean: clean
-	rm *.out
+	rm $(S)/*.out
