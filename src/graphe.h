@@ -6,21 +6,19 @@
 class Graphe
 {
     private:
+        /**
+         */
         int * grilleHauteur;
+        /**
+         */
+        int L;
+        int C;
 
     public:
         /**
          * Constructeur
          */
         Graphe();
-
-        /**
-        * Constructeur avec paramètres
-        * initialise le graphe (dans un tableau 1D de taille largeur * hauteur)
-        * @param largeur du graphe
-        * @param hauteur du graphe
-        */
-        Graphe(std::string largeur, std::string hauteur);
 
         /**
         * Initialise un graphe à partir d'un fichier (cf énoncé)
@@ -32,6 +30,13 @@ class Graphe
         * Destructeur
         */
         ~Graphe();
+        
+        /**
+        * Initialise le graphe (dans un tableau 1D de taille largeur * hauteur)
+        * @param largeur du graphe
+        * @param hauteur du graphe
+        */
+        void initialise(int largeur, int hauteur);
 
         /**
         * Opérateur d'affectation
