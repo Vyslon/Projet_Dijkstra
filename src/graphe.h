@@ -2,17 +2,26 @@
 #define _GRAPH
 
 #include <string>
+#include "distPred.h"
 
 class Graphe
 {
     private:
         /**
-         */
+         * Grille représentant les altitudes des différents sommets
+        */
         int * grilleHauteur;
+        // TODO : d'autres tableaux : (couleur, prédécesseur, longueur de chemin)
+
         /**
+         * * Nombre de lignes du graphe
          */
-        int L;
-        int C;
+        int lignes;
+
+        /**
+         * * Nombre de colonnes du graphe
+        */
+        int colonnes;
 
     public:
         /**
@@ -51,7 +60,7 @@ class Graphe
          * @param colonne indice de colonne du sommet
          * @return indice global du sommet
          */
-        int accesIndiceGlobal(int ligne, int colonne) const;
+        int accesIndiceGlobal(int idLigne, int idColonne) const;
 
         /**
          * Donne l'altitude d'un sommet à partir de son indice global
@@ -99,13 +108,21 @@ class Graphe
         /**
          * Modifie l'altitude d'un sommet à partir d'un indice global
          * @param indiceGlobal indice global du sommet dont on veut modifier l'altitude
+         * @param altitude altitude a affecté au sommet correspondant à indiceGlobal
          */
-        void modificationAltitudeSommet(int indiceGlobal);
+        void modificationAltitudeSommet(int indiceGlobal, int altitude);
 
         /**
          * Affiche la grille de hauteur
          */
         void affichageGrilleHauteur();
+
+        /**
+         * Applique l'algorithme de Dijkstra
+         * @param idNoeud indice de noeud
+         * @return PCD : tableau [indice de Noeud] de paire(distance, indice de Nœud))
+         */
+        void dijkstra(int idNoeud, distPred * tab);
 };
 
 #endif
