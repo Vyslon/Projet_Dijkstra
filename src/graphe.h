@@ -30,7 +30,7 @@ class Graphe
         * Destructeur
         */
         ~Graphe();
-        
+
         /**
         * Initialise le graphe (dans un tableau 1D de taille largeur * hauteur)
         * @param largeur du graphe

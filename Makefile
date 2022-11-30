@@ -5,14 +5,14 @@ O=obj
 
 all: $(B)/monprog.out
 
-$(B)/monprog.out: $(O)/main.o $(O)/Graphe.o
-	g++ -g $(O)/main.o $(O)/Graphe.o -o $(B)/monprog.out
+$(B)/monprog.out: $(O)/main.o $(O)/graphe.o
+	g++ -g $(O)/main.o $(O)/graphe.o -o $(B)/monprog.out
 
-$(O)/main.o: $(S)/main.cpp $(S)/Graphe.h
-	g++ -g -Wall -c -Wfatal-errors $(S)/main.cpp
+$(O)/main.o: $(S)/main.cpp $(S)/graphe.h
+	g++ -g -Wall -c -Wfatal-errors $(S)/main.cpp -o $(O)/main.o
 
-$(O)/Graphe.o: $(S)/Graphe.h $(S)/Graphe.cpp $(S)/Graphe.h
-	g++ -g -Wall -c -Wfatal-errors $(S)/Graphe.cpp
+$(O)/graphe.o: $(S)/graphe.h $(S)/graphe.cpp $(S)/graphe.h
+	g++ -g -Wall -c -Wfatal-errors $(S)/graphe.cpp -o $(O)/graphe.o
 
 clean:
 	rm $(O)/*.o
