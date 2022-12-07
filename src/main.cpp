@@ -13,7 +13,7 @@ int main()
     {
         for (int j = 0; j < 3; j++)
         {
-            std::cout << tab[3 * i + j].distance << "  ";
+            std::cout << tab[3 * i + j].idPredecesseur << "  ";
         }
         std::cout << std::endl;
 

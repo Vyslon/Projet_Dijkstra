@@ -1,3 +1,0 @@
-/Users/thomassantoni/Documents/L3/LIFAP6/TP9/voronoi/cmake-build-debug/CMakeFiles/voronoi.dir
-/Users/thomassantoni/Documents/L3/LIFAP6/TP9/voronoi/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/thomassantoni/Documents/L3/LIFAP6/TP9/voronoi/cmake-build-debug/CMakeFiles/rebuild_cache.dir
