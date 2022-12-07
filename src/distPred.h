@@ -16,6 +16,7 @@ enum couleur {
 class distPred
 {
     public:
+        // TODO : intégrer la hauteur
         int id;
         int distance = INT_MAX;
         int idPredecesseur;

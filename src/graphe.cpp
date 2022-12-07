@@ -9,7 +9,7 @@
 Graphe::Graphe(std::string fichier)
 {
     std::ifstream fichierGraphe;
-    fichierGraphe.open("data/" + fichier + ".txt");
+    fichierGraphe.open("../data/" + fichier + ".txt");
     int nbColonnes;
     int nbLignes;
 
@@ -64,21 +64,37 @@ int Graphe::accesAltitude(int indiceGlobal) const
 
 int Graphe::accesIndiceGlobalVoisin(int indiceGlobal, int orientation) const
 {
+    if (indiceGlobal % colonnes == colonnes - 1 && orientation == 2)
+        return -1;
+    else
+    if (indiceGlobal % colonnes == 0 && orientation == 3)
+        return -1;
+    else
+    if (indiceGlobal < colonnes && orientation == 0)
+        return -1;
+    else
+    if (indiceGlobal >= (lignes - 1) * colonnes && orientation == 1)
+        return -1;
+
     int res;
 
     switch (orientation)
     {
         case 0:
             res = indiceGlobal - colonnes;
+            break;
         case 1:
             res = indiceGlobal + colonnes;
+            break;
         case 2:
             res = indiceGlobal + 1;
+            break;
         case 3:
             res = indiceGlobal - 1;
+            break;
     }
-    if (res < 0 || res >= lignes * colonnes)
-        return -1;
+
+    return res;
 }
 
 void Graphe::modificationAltitudeSommet(int indiceGlobal, int altitude)
@@ -102,7 +118,7 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
     // TODO
     class comp {
         public:
-            bool operator() (const distPred * n1, const distPred * n2) const { return n1->distance < n2->distance; }
+            bool operator() (const distPred * n1, const distPred * n2) const { return n1->distance > n2->distance; }
     };
 
     std::priority_queue<distPred*, std::vector<distPred*>, comp> noeudsGris;
@@ -119,16 +135,13 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
     tab[idNoeud].distance = 0;
     noeudsGris.push(&tab[idNoeud]);
 
-    int distMin = INT_MAX;
-    int currDist;
-    int currNoeudGris;
     int indiceNoeudMin;
     int currNoeud;
     while (!noeudsGris.empty())
     {
         // TODO : A voir si c'est gênant de retirer les éléments de noeudsGris
-        while (!noeudsGris.empty())
-        {
+        //while (!noeudsGris.empty())
+        //{
             /*
             currNoeudGris = noeudsGris.top();
             noeudsGris.pop();
@@ -138,19 +151,21 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
                 distMin = currDist;
                 indiceNoeudMin = currNoeudGris;
             }*/
-            indiceNoeudMin = noeudsGris.top()->id;
-            // TODO ? noeudsGris.pop();
-        }
-        for (int i = 0; i < 4; i ++)
+        indiceNoeudMin = noeudsGris.top()->id;
+        noeudsGris.pop();
+        //}
+        for (int i = 0; i < 4; i++)
         {
             int voisin = accesIndiceGlobalVoisin(indiceNoeudMin, i);
-            if (voisin != -1 && tab[voisin].clr != noir)
+            if (voisin != -1 && tab[voisin].clr == blanc)
             {
                 tab[voisin].clr = gris;
+                noeudsGris.push(&tab[voisin]);
                 tab[voisin].idPredecesseur = indiceNoeudMin;
-                tab[voisin].distance = calculDist(indiceNoeudMin, voisin);
+                tab[voisin].distance = calculDist(indiceNoeudMin, voisin) + tab[indiceNoeudMin].distance;
             }
         }
+
         tab[indiceNoeudMin].clr = noir;
     }
     // TODO : while (il reste des noeuds gris (sans file de priorité puis avec))
