@@ -157,7 +157,7 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
         for (int i = 0; i < 4; i++)
         {
             int voisin = accesIndiceGlobalVoisin(indiceNoeudMin, i);
-            if (voisin != -1 && tab[voisin].clr == blanc)
+            if (voisin != -1 && tab[voisin].clr != noir)
             {
                 tab[voisin].clr = gris;
                 noeudsGris.push(&tab[voisin]);
