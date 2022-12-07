@@ -71,39 +71,12 @@ class Graphe
 
         /**
          * Donne l'indice global du voisin nord du sommet donné en paramètre
-         * Précondition : le voisin nord existe (ligne > 0)
-         * @param ligne indice de ligne du sommet dont on veut connaître le voisin nord
-         * @param colonne indice de colonne du sommet dont on veut connaître le voisin nord
-         * @return indice global du voisin nord du sommet donné en paramètre
+         * Précondition : le voisin pour l'orientation donnée existe
+         * @param indiceGlobal indice global du sommet dont on veut connaître le voisin
+         * @param orientation 0 = Nord, 1 = Sud, 2 = Est, 3 = Ouest
+         * @return indice global du voisin du sommet donné en paramètre
          */
-        int accesIndiceGlobalVoisinNord(int ligne, int colonne) const;
-
-        /**
-        * Donne l'indice global du voisin sud du sommet donné en paramètre
-        * Précondition : le voisin sud existe (ligne < L - 1, L étant le nombre de lignes)
-        * @param ligne indice de ligne du sommet dont on veut connaître le voisin sud
-        * @param colonne indice de colonne du sommet dont on veut connaître le voisin sud
-        * @return indice global du voisin sud du sommet donné en paramètre
-        */
-        int accesIndiceGlobalVoisinSud(int ligne, int colonne) const;
-
-        /**
-         * Donne l'indice global du voisin est du sommet donné en paramètre
-         * Précondition : le voisin est existe (colonne < C - 1, C étant le nombre de colonnes)
-         * @param ligne indice de ligne du sommet dont on veut connaître le voisin est
-         * @param colonne indice de colonne du sommet dont on veut connaître le voisin est
-         * @return indice global du voisin est du sommet donné en paramètre
-         */
-        int accesIndiceGlobalVoisinEst(int ligne, int colonne) const;
-
-        /**
-         * Donne l'indice global du voisin ouest du sommet donné en paramètre
-         * Précondition : le voisin ouest existe (colonne > 0)
-         * @param ligne indice de ligne du sommet dont on veut connaître le voisin ouest
-         * @param colonne indice de colonne du sommet dont on veut connaître le voisin ouest
-         * @return indice global du voisin ouest du sommet donné en paramètre
-         */
-        int accesIndiceGlobalVoisinOuest(int ligne, int colonne) const;
+        int accesIndiceGlobalVoisin(int indiceGlobal, int orientation) const;
 
         /**
          * Modifie l'altitude d'un sommet à partir d'un indice global
@@ -123,6 +96,8 @@ class Graphe
          * @return PCD : tableau [indice de Noeud] de paire(distance, indice de Nœud))
          */
         void dijkstra(int idNoeud, distPred * tab);
+
+        int calculDist(int idDepart, int idCible) const;
 };
 
 #endif

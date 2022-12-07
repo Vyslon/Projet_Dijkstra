@@ -2,7 +2,6 @@ S=src
 B=bin
 O=obj
 
-
 all: $(B)/monprog.out
 
 $(B)/monprog.out: $(O)/main.o $(O)/graphe.o
@@ -19,3 +18,4 @@ clean:
 
 veryclean: clean
 	rm $(S)/*.out
+
