@@ -22,6 +22,8 @@ class distPred
         int distance = INT_MAX;
         int idPredecesseur;
         couleur clr;
+
+        inline bool operator> (const distPred& rhs) { return rhs.distance > this->distance; }
 };
 
 #endif //VORONOI_DISTPRED_H

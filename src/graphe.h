@@ -104,6 +104,8 @@ class Graphe
         void dijkstra(int idNoeud, distPred * tab);
 
         int calculDist(int idDepart, int idCible) const;
+
+        bool estVoisin(int idDepart, int idCible) const;
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "graphe.h"
+#include "distPred.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -126,15 +127,22 @@ Graphe& Graphe::operator= (const Graphe & grp)
 // distances : + infini a tout le monde sauf, 0 sur le noeud de départ et indice du précèdent = 0
 void Graphe::dijkstra(int idNoeud, distPred * tab)
 {
-    //std::stack<int> noeudsGris;
-
-    // TODO
-    class comp {
-        public:
-            bool operator() (const distPred * n1, const distPred * n2) const { return n1->distance > n2->distance; }
+    // Ici, on fait en sorte que les noeuds les moins éloignés sont en haut de la file de priorité (le sens de la
+    // comparaison est inversé par rapport à une fonction de comparaison classique car la file de priorité cherche à
+    // trier par ordre décroissant par défaut
+    struct myComparator
+    {
+        int operator()(const std::tuple<int, int>& t1,
+                       const std::tuple<int, int>& t2)
+        {
+            return std::get<0>(t1) > std::get<0>(t2);
+        }
     };
 
-    std::priority_queue<distPred*, std::vector<distPred*>, comp> noeudsGris;
+    // Tuples : <distance, id>
+    std::priority_queue<std::tuple<int, int>,
+            std::vector<std::tuple<int, int>>,
+            myComparator> noeudsGris;
 
     for (int i = 0; i < lignes; i++)
     {
@@ -146,46 +154,49 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
     }
     tab[idNoeud].clr = gris;
     tab[idNoeud].distance = 0;
-    noeudsGris.push(&tab[idNoeud]);
+    noeudsGris.push(std::make_tuple(0, idNoeud));
 
     int indiceNoeudMin;
-    int currNoeud;
+    int currNoeud = 0;
     while (!noeudsGris.empty())
     {
-        // TODO : A voir si c'est gênant de retirer les éléments de noeudsGris
-        //while (!noeudsGris.empty())
-        //{
-            /*
-            currNoeudGris = noeudsGris.top();
-            noeudsGris.pop();
-            currDist = tab[currNoeudGris].distance;
-            if (currDist < distMin)
-            {
-                distMin = currDist;
-                indiceNoeudMin = currNoeudGris;
-            }*/
-        indiceNoeudMin = noeudsGris.top()->id;
-        noeudsGris.pop();
-        //}
+        if (indiceNoeudMin > 0)
+            currNoeud = indiceNoeudMin;
+
+        indiceNoeudMin = std::get<1>(noeudsGris.top());
+
         for (int i = 0; i < 4; i++)
         {
             int voisin = accesIndiceGlobalVoisin(indiceNoeudMin, i);
-            if (voisin != -1 && tab[voisin].clr != noir)
+            if ((voisin != -1 && tab[voisin].clr == blanc))
             {
-                tab[voisin].clr = gris;
-                noeudsGris.push(&tab[voisin]);
-                tab[voisin].idPredecesseur = indiceNoeudMin;
-                tab[voisin].distance = calculDist(indiceNoeudMin, voisin) + tab[indiceNoeudMin].distance;
+                    tab[voisin].clr = gris;
+                    tab[voisin].idPredecesseur = indiceNoeudMin;
+                    tab[voisin].distance = calculDist(indiceNoeudMin, voisin) + tab[indiceNoeudMin].distance;
+                    noeudsGris.push(std::make_tuple(tab[voisin].distance, voisin));
             }
         }
 
         tab[indiceNoeudMin].clr = noir;
+        noeudsGris.pop();
     }
-    // TODO : while (il reste des noeuds gris (sans file de priorité puis avec))
-    // TODO : utiliser stack puis file de priorité
 }
 
 int Graphe::calculDist(int idDepart, int idCible) const
 {
     return sqrt(1 + (grilleHauteur[idDepart] - grilleHauteur[idCible]) * (grilleHauteur[idDepart] - grilleHauteur[idCible]));
 }
+
+bool Graphe::estVoisin(int idDepart, int idCible) const
+{
+    if (idDepart == idCible - 1 && (idCible % colonnes) != 0)
+        return true;
+    else if (idDepart == idCible + 1 && (idDepart % colonnes) != 0)
+        return true;
+    else if (idDepart == idCible - colonnes && idCible >= colonnes)
+        return true;
+    else if (idDepart == idCible + colonnes && idCible < (lignes * (colonnes - 1)))
+        return true;
+    else
+        return idDepart == idCible;
+} // 0 et 3 voisins
