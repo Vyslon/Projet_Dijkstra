@@ -104,7 +104,20 @@ void Graphe::modificationAltitudeSommet(int indiceGlobal, int altitude)
 
 Graphe& Graphe::operator= (const Graphe & grp)
 {
-    // TODO
+    lignes = grp.lignes;
+	colonnes = grp.colonnes;
+
+	delete[] grilleHauteur;
+	delete[] couleurs;
+
+	grilleHauteur = new int[lignes * colonnes];
+	couleurs = new couleur[lignes * colonnes];
+	
+	for (int i = 0; i < lignes * colonnes; i++)
+	{
+		grilleHauteur[i] = grp.grilleHauteur[i];
+		couleurs[i] = grp.couleurs[i];
+	}
     return *this;
 }
 

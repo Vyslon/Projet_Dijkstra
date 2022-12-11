@@ -3,6 +3,7 @@
 //
 
 #include <list>
+#include <climits>
 
 #ifndef VORONOI_DISTPRED_H
 #define VORONOI_DISTPRED_H

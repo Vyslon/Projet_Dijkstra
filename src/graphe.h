@@ -11,8 +11,14 @@ class Graphe
          * Grille représentant les altitudes des différents sommets
         */
         int * grilleHauteur;
-        // TODO : d'autres tableaux : (couleur, prédécesseur, longueur de chemin)
 
+        //TODO : d'autres tableaux : (prédécesseur, longueur de chemin)
+
+        /**
+         * tableau représentant les couleurs des différents sommets
+        */ 
+        couleur * couleurs;
+        
         /**
          * * Nombre de lignes du graphe
          */
