@@ -12,8 +12,6 @@ class Graphe
         */
         int * grilleHauteur;
 
-        //TODO : d'autres tableaux : (prédécesseur, longueur de chemin)
-
         /**
          * tableau représentant les couleurs des différents sommets
         */ 
@@ -110,12 +108,28 @@ class Graphe
         void dijkstra(int idNoeud, distPred * tab);
 
         /**
-         * Enregistre et affiche pour chaque point de la grille l'indice du site dont il est le plus proche (ainsi que
-         * la distance
-         * boucler sur grilleHauteur
-         * TODO : expliquer les paramètres
+         * Enregistre et affiche pour chaque point de la grille l'indice de la librairie dont il est la plus proche
+         * (ainsi que la distance)
+         * format d'affichage :
+         * (distance, id de la librairie la plus proche)
+         * @param graphesLibrairies tableau contenant les tableau de distPred pour chaque librairie (calculés avec la
+         * méthode dijkstra
+         * @param nbLibrairies : nombre de librairies (todo : à remplacer par une donnée membre)
+         * @param idLibrairies : indices globaux des librairies  (todo : à remplacer par une donnée membre)
          */
         void voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies);
+
+        /**
+         * Enregistre et affiche pour chaque point de la grille l'indice de la librairie avec le coût de livraison le
+         * plus faible (distance * coût au Km)
+         * format d'affichage :
+         * (coût, id de la librairie avec le coût de livraison le plus faible)
+         * @param graphesLibrairies tableau contenant les tableau de distPred pour chaque librairie (calculés avec la
+         * méthode dijkstra
+         * @param nbLibrairies : nombre de librairies (todo : à remplacer par une donnée membre)
+         * @param idLibrairies : indices globaux des librairies  (todo : à remplacer par une donnée membre)
+         */
+        void voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, std::tuple<int, int> * idLibrairiesCout);
 
         int calculDist(int idDepart, int idCible) const;
 
@@ -132,6 +146,18 @@ class Graphe
          * @return colonnes : nombre de lignes de graphe
          */
         int getLignes();
+
+        /**
+         * TODO :
+         * Récupère les emplacements des librairies dans un fichier :
+         * 1 ligne par librairie sous le format :
+         * numLigne nuCcolonne coutLivraison
+         * numLigne numColonne coutLivraison
+         * ...
+         * puis stocke les emplacements de ces librairies dans une donnée membre idlibrairiesCout
+         * (stocke également le nombre de librairies dans une donnée membre nbLibrairies)
+         * */
+         void recupLibrairies(std::string fichier);
 };
 
 #endif

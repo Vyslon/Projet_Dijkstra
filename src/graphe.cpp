@@ -146,6 +146,7 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
             std::vector<std::tuple<int, int>>,
             myComparator> noeudsGris;
 
+    // Colorie tous les noeuds en blanc
     for (int i = 0; i < lignes; i++)
     {
         for (int j = 0; j < colonnes; j++)
@@ -154,6 +155,7 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
             tab[i * colonnes + j].id = i * colonnes + j;
         }
     }
+
     tab[idNoeud].clr = gris;
     tab[idNoeud].distance = 0;
     noeudsGris.push(std::make_tuple(0, idNoeud));
@@ -201,7 +203,7 @@ bool Graphe::estVoisin(int idDepart, int idCible) const
         return true;
     else
         return idDepart == idCible;
-} // 0 et 3 voisins
+}
 
 int Graphe::getColonnes(){
     return colonnes;
@@ -213,20 +215,56 @@ int Graphe::getLignes(){
 
 void Graphe::voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies)
 {
+    // Grille de voronoi, contient des tuples
+    // (distance depuis la librairie la plus proche, id de cette librairie)
     grilleVoronoi = new std::tuple<int, int>[lignes * colonnes];
 
-    // Faire tourner les Dijkstra depuis main.cpp
-    // Stocker sur un tuple de int, en tant qu'attribut de la classe + affichage
     for (int i = 0; i < lignes * colonnes; i++)
     {
         // distance et id de la librairie la plus proche
         // (distance, id)
         std::tuple<int, int> distId = std::make_tuple(INT_MAX, INT_MAX);
+
         for (int j = 0; j < nbLibrairies; j++)
         {
+            // Si la librairie est plus proche pour le noeud donné, on remplace la distance et la librairie la plus
+            // proche
             if (graphesLibrairies[j][i].distance < std::get<0>(distId))
                 distId = std::make_tuple(graphesLibrairies[j][i].distance, idLibrairies[j]);
         }
+
+        // On ajoute à la grille finale la distance et l'id de la librairie la plus proche pour un noeud donné
+        grilleVoronoi[i] = std::make_tuple(std::get<0>(distId), std::get<1>(distId));
+        if (i % colonnes == 0)
+            std::printf("\n");
+
+        std::printf("(%d, %d)  ", std::get<0>(distId), std::get<1>(distId));
+    }
+}
+
+void Graphe::voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, std::tuple<int, int> * idLibrairiesCout)
+{
+    // Grille de voronoi, contient des tuples
+    // (distance depuis la librairie au coût total de livraison le plus faible, id de cette librairie)
+    grilleVoronoi = new std::tuple<int, int>[lignes * colonnes];
+
+    for (int i = 0; i < lignes * colonnes; i++)
+    {
+        // distance et id de la librairie au coût total de livraison le plus faible
+        // (distance, id)
+        std::tuple<int, int> distId = std::make_tuple(INT_MAX, INT_MAX);
+        for (int j = 0; j < nbLibrairies; j++)
+        {
+            // On récupère le coût au km de la librairie
+            int cout =  std::get<1>(idLibrairiesCout[j]);
+
+            // Si la librairie revient moins cher à la livraison pour le noeud donnée, on remplace le coût et la
+            // l'id de la librairie qui revient la moins cher
+            if (graphesLibrairies[j][i].distance * cout < std::get<0>(distId))
+                distId = std::make_tuple(graphesLibrairies[j][i].distance * cout, std::get<0>(idLibrairiesCout[j]));
+        }
+
+        // On ajoute à la grille finale le coût et l'id de la librairie au coût total de livraison le plus faible
         grilleVoronoi[i] = std::make_tuple(std::get<0>(distId), std::get<1>(distId));
         if (i % colonnes == 0)
             std::printf("\n");
