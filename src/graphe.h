@@ -14,9 +14,15 @@ class Graphe
 
         /**
          * tableau représentant les couleurs des différents sommets
-        */ 
+        */
         couleur * couleurs;
-        
+
+        /**
+        * Nombre de librairies dans le graphe
+         * todo : remplir cette donnée membre dans la fonction recupLibrairies
+         */
+        int nbLibrairies;
+
         /**
          * Nombre de lignes du graphe
          */
@@ -29,10 +35,17 @@ class Graphe
 
     public:
         /**
-             * Grille dans laquelle est stockée pour chaque noeud, un couple (distance de la librairie la plus proche,
-             * id de la librairie la plus proche)
-            */
+         * Grille dans laquelle est stockée pour chaque noeud, un couple (distance de la librairie la plus proche,
+         * id de la librairie la plus proche) dans le cas d'un appel à Voronoi, si on appelle VoronoiLivraison ce sera
+         * un couple (coût total de livraison le plus faible,  id de la librairie correspondante)
+        */
         std::tuple<int, int> * grilleVoronoi;
+
+        /**
+        * Liste de tuples contenant pour chaque librairie son coût associé /km
+        * todo : remplir cette donnée membre dans la fonction recupLibrairies
+        */
+        std::tuple<int, int> * idLibrairiesCout;
 
         /**
          * Constructeur
@@ -114,8 +127,8 @@ class Graphe
          * (distance, id de la librairie la plus proche)
          * @param graphesLibrairies tableau contenant les tableau de distPred pour chaque librairie (calculés avec la
          * méthode dijkstra
-         * @param nbLibrairies : nombre de librairies (todo : à remplacer par une donnée membre)
-         * @param idLibrairies : indices globaux des librairies  (todo : à remplacer par une donnée membre)
+         * @param nbLibrairies : nombre de librairies
+         * @param idLibrairies : indices globaux des librairies
          */
         void voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies);
 
@@ -126,8 +139,8 @@ class Graphe
          * (coût, id de la librairie avec le coût de livraison le plus faible)
          * @param graphesLibrairies tableau contenant les tableau de distPred pour chaque librairie (calculés avec la
          * méthode dijkstra
-         * @param nbLibrairies : nombre de librairies (todo : à remplacer par une donnée membre)
-         * @param idLibrairies : indices globaux des librairies  (todo : à remplacer par une donnée membre)
+         * @param nbLibrairies : nombre de librairies
+         * @param idLibrairies : indices globaux des librairies
          */
         void voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, std::tuple<int, int> * idLibrairiesCout);
 
