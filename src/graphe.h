@@ -20,16 +20,22 @@ class Graphe
         couleur * couleurs;
         
         /**
-         * * Nombre de lignes du graphe
+         * Nombre de lignes du graphe
          */
         int lignes;
 
         /**
-         * * Nombre de colonnes du graphe
+         * Nombre de colonnes du graphe
         */
         int colonnes;
 
     public:
+        /**
+             * Grille dans laquelle est stockée pour chaque noeud, un couple (distance de la librairie la plus proche,
+             * id de la librairie la plus proche)
+            */
+        std::tuple<int, int> * grilleVoronoi;
+
         /**
          * Constructeur
          */
@@ -103,9 +109,29 @@ class Graphe
          */
         void dijkstra(int idNoeud, distPred * tab);
 
+        /**
+         * Enregistre et affiche pour chaque point de la grille l'indice du site dont il est le plus proche (ainsi que
+         * la distance
+         * boucler sur grilleHauteur
+         * TODO : expliquer les paramètres
+         */
+        void voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies);
+
         int calculDist(int idDepart, int idCible) const;
 
         bool estVoisin(int idDepart, int idCible) const;
+
+        /**
+         * Retourne le nombre de colonnes de graphe
+         * @return colonnes : nombre de colonnes de graphe
+         */
+        int getColonnes();
+
+        /**
+         * Retourne le nombre de lignes de graphe
+         * @return colonnes : nombre de lignes de graphe
+         */
+        int getLignes();
 };
 
 #endif

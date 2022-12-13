@@ -26,4 +26,6 @@ class distPred
         inline bool operator> (const distPred& rhs) { return rhs.distance > this->distance; }
 };
 
+std::string getCouleur(couleur clr);
+
 #endif //VORONOI_DISTPRED_H

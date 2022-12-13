@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
+#include <tuple>
 
 Graphe::Graphe(std::string fichier)
 {
@@ -31,6 +32,7 @@ Graphe::Graphe(std::string fichier)
     {
         std::cout << "Erreur : d'ouverture du fichier : " << fichier << ".txt" << std::endl;
     }
+    fichierGraphe.close();
 }
 
 void Graphe::initialise(int largeur, int hauteur)
@@ -200,3 +202,35 @@ bool Graphe::estVoisin(int idDepart, int idCible) const
     else
         return idDepart == idCible;
 } // 0 et 3 voisins
+
+int Graphe::getColonnes(){
+    return colonnes;
+}
+
+int Graphe::getLignes(){
+    return lignes;
+}
+
+void Graphe::voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies)
+{
+    grilleVoronoi = new std::tuple<int, int>[lignes * colonnes];
+
+    // Faire tourner les Dijkstra depuis main.cpp
+    // Stocker sur un tuple de int, en tant qu'attribut de la classe + affichage
+    for (int i = 0; i < lignes * colonnes; i++)
+    {
+        // distance et id de la librairie la plus proche
+        // (distance, id)
+        std::tuple<int, int> distId = std::make_tuple(INT_MAX, INT_MAX);
+        for (int j = 0; j < nbLibrairies; j++)
+        {
+            if (graphesLibrairies[j][i].distance < std::get<0>(distId))
+                distId = std::make_tuple(graphesLibrairies[j][i].distance, idLibrairies[j]);
+        }
+        grilleVoronoi[i] = std::make_tuple(std::get<0>(distId), std::get<1>(distId));
+        if (i % colonnes == 0)
+            std::printf("\n");
+
+        std::printf("(%d, %d)  ", std::get<0>(distId), std::get<1>(distId));
+    }
+}
