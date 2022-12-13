@@ -11,7 +11,8 @@
 Graphe::Graphe(std::string fichier)
 {
     std::ifstream fichierGraphe;
-    fichierGraphe.open("../data/" + fichier + ".txt");
+    // Pour utilisation avec un makefile (et pas CMakeLists, mettre ../data
+    fichierGraphe.open("./data/" + fichier + ".txt");
     int nbColonnes;
     int nbLignes;
 
@@ -108,19 +109,19 @@ void Graphe::modificationAltitudeSommet(int indiceGlobal, int altitude)
 Graphe& Graphe::operator= (const Graphe & grp)
 {
     lignes = grp.lignes;
-	colonnes = grp.colonnes;
+    colonnes = grp.colonnes;
 
-	delete[] grilleHauteur;
-	delete[] couleurs;
+    delete[] grilleHauteur;
+    delete[] couleurs;
 
-	grilleHauteur = new int[lignes * colonnes];
-	couleurs = new couleur[lignes * colonnes];
-	
-	for (int i = 0; i < lignes * colonnes; i++)
-	{
-		grilleHauteur[i] = grp.grilleHauteur[i];
-		couleurs[i] = grp.couleurs[i];
-	}
+    grilleHauteur = new int[lignes * colonnes];
+    couleurs = new couleur[lignes * colonnes];
+
+    for (int i = 0; i < lignes * colonnes; i++)
+    {
+        grilleHauteur[i] = grp.grilleHauteur[i];
+        couleurs[i] = grp.couleurs[i];
+    }
     return *this;
 }
 
@@ -174,10 +175,10 @@ void Graphe::dijkstra(int idNoeud, distPred * tab)
             int voisin = accesIndiceGlobalVoisin(indiceNoeudMin, i);
             if ((voisin != -1 && tab[voisin].clr == blanc))
             {
-                    tab[voisin].clr = gris;
-                    tab[voisin].idPredecesseur = indiceNoeudMin;
-                    tab[voisin].distance = calculDist(indiceNoeudMin, voisin) + tab[indiceNoeudMin].distance;
-                    noeudsGris.push(std::make_tuple(tab[voisin].distance, voisin));
+                tab[voisin].clr = gris;
+                tab[voisin].idPredecesseur = indiceNoeudMin;
+                tab[voisin].distance = calculDist(indiceNoeudMin, voisin) + tab[indiceNoeudMin].distance;
+                noeudsGris.push(std::make_tuple(tab[voisin].distance, voisin));
             }
         }
 
@@ -213,7 +214,7 @@ int Graphe::getLignes(){
     return lignes;
 }
 
-void Graphe::voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies)
+void Graphe::voronoi(distPred ** graphesLibrairies)
 {
     // Grille de voronoi, contient des tuples
     // (distance depuis la librairie la plus proche, id de cette librairie)
@@ -221,16 +222,16 @@ void Graphe::voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLi
 
     for (int i = 0; i < lignes * colonnes; i++)
     {
-        // distance et id de la librairie la plus proche
-        // (distance, id)
-        std::tuple<int, int> distId = std::make_tuple(INT_MAX, INT_MAX);
+        // distance, id et couleur de la librairie la plus proche
+        // (distance, id, couleur)
+        std::tuple<int, int, std::string> distId = std::make_tuple(INT_MAX, INT_MAX, getLibrairieCouleur(-1));
 
         for (int j = 0; j < nbLibrairies; j++)
         {
             // Si la librairie est plus proche pour le noeud donné, on remplace la distance et la librairie la plus
             // proche
             if (graphesLibrairies[j][i].distance < std::get<0>(distId))
-                distId = std::make_tuple(graphesLibrairies[j][i].distance, idLibrairies[j]);
+                distId = std::make_tuple(graphesLibrairies[j][i].distance, std::get<0>(idLibrairiesCout[j]), getLibrairieCouleur(j));
         }
 
         // On ajoute à la grille finale la distance et l'id de la librairie la plus proche pour un noeud donné
@@ -238,11 +239,13 @@ void Graphe::voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLi
         if (i % colonnes == 0)
             std::printf("\n");
 
+        std::cout << std::get<2>(distId);
         std::printf("(%d, %d)  ", std::get<0>(distId), std::get<1>(distId));
+        std::cout << getLibrairieCouleur(-1);
     }
 }
 
-void Graphe::voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, std::tuple<int, int> * idLibrairiesCout)
+void Graphe::voronoiLivraison(distPred ** graphesLibrairies)
 {
     // Grille de voronoi, contient des tuples
     // (distance depuis la librairie au coût total de livraison le plus faible, id de cette librairie)
@@ -250,9 +253,10 @@ void Graphe::voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, s
 
     for (int i = 0; i < lignes * colonnes; i++)
     {
-        // distance et id de la librairie au coût total de livraison le plus faible
-        // (distance, id)
-        std::tuple<int, int> distId = std::make_tuple(INT_MAX, INT_MAX);
+        // cout, id et couleur de la librairie la plus proche
+        // (cout, id, couleur)
+        std::tuple<int, int, std::string> distId = std::make_tuple(INT_MAX, INT_MAX, getLibrairieCouleur(-1));
+
         for (int j = 0; j < nbLibrairies; j++)
         {
             // On récupère le coût au km de la librairie
@@ -261,7 +265,7 @@ void Graphe::voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, s
             // Si la librairie revient moins cher à la livraison pour le noeud donnée, on remplace le coût et la
             // l'id de la librairie qui revient la moins cher
             if (graphesLibrairies[j][i].distance * cout < std::get<0>(distId))
-                distId = std::make_tuple(graphesLibrairies[j][i].distance * cout, std::get<0>(idLibrairiesCout[j]));
+                distId = std::make_tuple(graphesLibrairies[j][i].distance * cout, std::get<0>(idLibrairiesCout[j]), getLibrairieCouleur(j));
         }
 
         // On ajoute à la grille finale le coût et l'id de la librairie au coût total de livraison le plus faible
@@ -269,6 +273,70 @@ void Graphe::voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, s
         if (i % colonnes == 0)
             std::printf("\n");
 
+        std::cout << std::get<2>(distId);
         std::printf("(%d, %d)  ", std::get<0>(distId), std::get<1>(distId));
+        std::cout << getLibrairieCouleur(-1);
     }
+}
+
+std::string Graphe::getLibrairieCouleur(int idLib){
+    std::string code_couleur;
+    switch (idLib)
+    {
+        case 0 :
+            code_couleur="\e[0;31m"; // Red
+            break;
+        case 1 :
+            code_couleur="\e[0;32m"; // Green
+            break;
+        case 2 :
+            code_couleur="\e[0;34m"; // Blue
+            break;
+        case 3 :
+            code_couleur="\e[0;33m"; // Yellow
+            break;
+        case 4 :
+            code_couleur="\e[0;35m"; // Purple
+            break;
+        case 5 :
+            code_couleur="\e[0;36m"; // Cyan
+            break;
+        default:
+            code_couleur="\e[0;30m"; // Black
+            break;
+    }
+    return code_couleur;
+}
+
+void Graphe::setNbLibrairies(int nbLibrairies)
+{
+    this->nbLibrairies=nbLibrairies;
+}
+int Graphe::getNbLibrairies()
+{
+    return this->nbLibrairies;
+}
+void Graphe::recupLibrairies(std::string fichier)
+{
+    std::ifstream fichierLibrairies;
+    fichierLibrairies.open("./data/" + fichier + ".txt");
+    if (fichierLibrairies.is_open())
+    {
+        fichierLibrairies >> nbLibrairies;
+        idLibrairiesCout = new std::tuple<int, int>[nbLibrairies];
+        for (int i = 0; i < nbLibrairies; i++)
+        {
+            int numLigne, numColonne, coutLivraison;
+            fichierLibrairies >> numLigne >> numColonne >> coutLivraison ;
+            idLibrairiesCout[i] = std::make_tuple(numLigne * getColonnes() + numColonne, coutLivraison);
+        }
+    }
+    else
+    {
+        std::cout << "Erreur : d'ouverture du fichier : " << fichier << ".txt" << std::endl;
+    }
+    fichierLibrairies.close();
+}
+int Graphe::getIdLibrairie(int i){
+    return std::get<0>(idLibrairiesCout[i]);
 }

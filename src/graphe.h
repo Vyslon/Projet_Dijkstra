@@ -19,7 +19,6 @@ class Graphe
 
         /**
         * Nombre de librairies dans le graphe
-         * todo : remplir cette donnée membre dans la fonction recupLibrairies
          */
         int nbLibrairies;
 
@@ -43,7 +42,6 @@ class Graphe
 
         /**
         * Liste de tuples contenant pour chaque librairie son coût associé /km
-        * todo : remplir cette donnée membre dans la fonction recupLibrairies
         */
         std::tuple<int, int> * idLibrairiesCout;
 
@@ -127,10 +125,8 @@ class Graphe
          * (distance, id de la librairie la plus proche)
          * @param graphesLibrairies tableau contenant les tableau de distPred pour chaque librairie (calculés avec la
          * méthode dijkstra
-         * @param nbLibrairies : nombre de librairies
-         * @param idLibrairies : indices globaux des librairies
          */
-        void voronoi(distPred ** graphesLibrairies, int nbLibrairies, int * idLibrairies);
+        void voronoi(distPred ** graphesLibrairies);
 
         /**
          * Enregistre et affiche pour chaque point de la grille l'indice de la librairie avec le coût de livraison le
@@ -142,7 +138,7 @@ class Graphe
          * @param nbLibrairies : nombre de librairies
          * @param idLibrairies : indices globaux des librairies
          */
-        void voronoiLivraison(distPred ** graphesLibrairies, int nbLibrairies, std::tuple<int, int> * idLibrairiesCout);
+        void voronoiLivraison(distPred ** graphesLibrairies);
 
         int calculDist(int idDepart, int idCible) const;
 
@@ -161,7 +157,17 @@ class Graphe
         int getLignes();
 
         /**
-         * TODO :
+         * Modifier le nombre de librairies
+         * @param nbLibrairies : nombre de librairies
+         */
+        void setNbLibrairies(int nbLibrairies);
+        /**
+         * Retourne le nombre de librairies
+         * @return nbLibrairies : nombre de librairies
+         */
+        int getNbLibrairies();
+
+        /**
          * Récupère les emplacements des librairies dans un fichier :
          * 1 ligne par librairie sous le format :
          * numLigne nuCcolonne coutLivraison
@@ -169,8 +175,23 @@ class Graphe
          * ...
          * puis stocke les emplacements de ces librairies dans une donnée membre idlibrairiesCout
          * (stocke également le nombre de librairies dans une donnée membre nbLibrairies)
+         * @param fichier dans lequel est stocké les emplacements ainsi que les coûts des librairies
          * */
-         void recupLibrairies(std::string fichier);
+        void recupLibrairies(std::string fichier);
+
+        /**
+        * Retourne l'indice globale d'une librairie etant donné son indice dans le tableau'
+        * @param i : indice de la librairie dans le tableau
+        * @return indice global de la librairie dans le graphe
+        */
+        int getIdLibrairie(int i);
+
+        /**
+        * Retourne le code couleur de la librairie étant donné son indice
+        * @param idLib : indice de la librairie dans le tableau idlibrairies
+        * @return code couleur dans une chaine de caractères
+        */
+        std::string getLibrairieCouleur(int idLib);
 };
 
 #endif

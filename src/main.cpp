@@ -4,71 +4,59 @@
 
 int main()
 {
-    // TODO : ici montrer que toutes les fonctionnalités demandées fonctionnent "En plus des opérations classiques
-    // d’initialisation, d’affectation et de testament de graphe,
-    // prévoir des fonctions d’accès à l’indice global d’un sommet en fonction de ses indices de ligne ou
-    // de colonne, d’accès à l’altitude d’un sommet (en fonction de son indice global), d’accès à l’indice
-    // global du voisin Nord (resp. Sud, Est et Ouest) d’un sommet (avec pour précondition que le
-    // voisin existe) ainsi que des procédures de modification de l’altitude d’un sommet et une procédure
-    // d’affichage de la grille de hauteur.
-    // Faire un petit programme qui illustre que votre module met correctement en œuvre toutes les
-    // fonctionnalités demandées pour les graphes de terrain."
-    Graphe grp("test");
+    Graphe grp("hauteurs");
     std::cout << "Les indices globales des noeuds :" << std::endl;
     grp.affichageGrilleHauteur();
 
+    std::printf("\nId global : %d (pour 2ème ligne et 0ème colonne)\n", grp.accesIndiceGlobal(2, 0));
 
+    std::printf("Altitude à l'indice global 1 : %d\n", grp.accesAltitude(1));
+
+    std::printf("Indice global du voisin nord du noeud 4 : %d\n", grp.accesIndiceGlobalVoisin(4, 0));
+    std::printf("Indice global du voisin sud du noeud 4 : %d\n", grp.accesIndiceGlobalVoisin(4, 1));
+    std::printf("Indice global du voisin est du noeud 4 : %d\n", grp.accesIndiceGlobalVoisin(4, 2));
+    std::printf("Indice global du voisin ouest du noeud 4 : %d\n", grp.accesIndiceGlobalVoisin(4, 3));
+
+    grp.modificationAltitudeSommet(1, 15);
+    std::printf("Altitude à l'indice global 1 : %d\n", grp.accesAltitude(1));
+
+
+    grp.modificationAltitudeSommet(1, 12);
     /**
      * Exemple Voronoi (en prenant uniquement en compte les distances)
      * */
+    // Les emplacements ainsi que les couts des librairies sont chargées à parrtir de fichier                                                     std::make_tuple(7, 3)};
+    grp.recupLibrairies("librairies");
 
     std::printf("\nDiagramme de Voronoï en prenant uniquement en compte les distances\n");
-
-    // todo : à remplacer par une donnée membre
-    const int nbLibrairies = 3;
     distPred * tab = nullptr;
 
-    // todo : à remplacer par une donnée membre (liste de tuples, voir plus bas)
-    // indices globaux des librairies du graphe
-    int idlibrairies [nbLibrairies] = {0, 6, 7};
-    distPred ** graphesLibrairies = new distPred*[nbLibrairies];
+    distPred ** graphesLibrairies = new distPred*[grp.getNbLibrairies()];
 
     // Calcule dijkstra pour toutes les librairies
-    for (int i = 0; i < nbLibrairies; i++)
+    for (int i = 0; i < grp.getNbLibrairies(); i++)
     {
         tab = new distPred[grp.getLignes()*grp.getColonnes()];
-        grp.dijkstra(idlibrairies[i], tab);
+        grp.dijkstra(std::get<0>(grp.idLibrairiesCout[i]), tab);
         graphesLibrairies[i] = tab;
     }
-    grp.voronoi(graphesLibrairies, nbLibrairies, idlibrairies);
+    grp.voronoi(graphesLibrairies);
 
     /**
      * Exemple VoronoiLivraison (en prenant en compte les distances et les coût au km)
      * */
     std::printf("\n");
-
-    // todo : pas besoin de faire un autre graphe, il faut juste utiliser une donnée membre idLibrairiesCout
-    Graphe grpL("test");
-    std::cout << "Les indices globales des noeuds :" << std::endl;
-    grp.affichageGrilleHauteur();
-
     std::printf("\nDiagramme de Voronoï en compte les distances et les coûts de livraison au km\n");
 
-    const int nbLibrairiesL = 3;
-    distPred * tabL = nullptr;
 
-    // todo : à remplacer par une donnée membre (liste de tuples, voir plus bas)
-    //
-    std::tuple<int, int> idlibrairiesCout [nbLibrairies] = {std::make_tuple(0, 10), std::make_tuple(6, 2),
-                                                            std::make_tuple(7, 3)};
-    distPred ** graphesLibrairiesL = new distPred*[nbLibrairies];
+    distPred ** graphesLibrairiesL = new distPred*[grp.getNbLibrairies()];
 
-    for (int i = 0; i < nbLibrairies; i++)
+    for (int i = 0; i < grp.getNbLibrairies(); i++)
     {
         tab = new distPred[grp.getLignes()*grp.getColonnes()];
-        grp.dijkstra(idlibrairies[i], tab);
+        grp.dijkstra(std::get<0>(grp.idLibrairiesCout[i]), tab);
         graphesLibrairies[i] = tab;
     }
-    grp.voronoiLivraison(graphesLibrairies, nbLibrairies, idlibrairiesCout);
+    grp.voronoiLivraison(graphesLibrairies);
 
 }
